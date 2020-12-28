@@ -16,8 +16,8 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 # Follow the file as it grows
-for line in tailer.follow(open('logfile.txt')):
-    # check against blocklist
+for line in tailer.follow(open('/var/log/syslog')):
+    # check if is SSH login
     for unwantedUrl in blocklist:
         # if there exist a line with a entry on the blocklist, do 'telegram-send'
         if unwantedUrl in line:
