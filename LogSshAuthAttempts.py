@@ -1,14 +1,25 @@
 #!/usr/bin/python
 
 # imports
+#  https://pypi.org/project/tailer/
 import tailer
-# https://pypi.org/project/tailer/
+#  https://pypi.org/project/mysql-connector-python/
 import mysql.connector
-# https://pypi.org/project/mysql-connector-python/
-# https://www.w3schools.com/python/python_mysql_insert.asp
 from datetime import datetime
 
 # set database information
+#  https://www.w3schools.com/python/python_mysql_insert.asp
+#  the database and tables have to be created before running this script. below the 'CREATE TABLE' statement I used in this case:
+
+#CREATE TABLE ssh_attempt.log (
+#  id INT AUTO_INCREMENT,
+#  time DATETIME NOT NULL,
+#  username VARCHAR(100),
+#  srcIp VARCHAR(15),
+#  PRIMARY KEY(id)
+#);
+
+#  make sure your user has the correct permissions on the database.
 mydb = mysql.connector.connect(
   host="localhost",
   user="yourusername",
