@@ -2,7 +2,9 @@
 
 # imports
 import tailer
+# https://pypi.org/project/tailer/
 import mysql.connector
+# https://pypi.org/project/mysql-connector-python/
 # https://www.w3schools.com/python/python_mysql_insert.asp
 
 # set database information
@@ -16,7 +18,7 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 # Follow the file as it grows
-for line in tailer.follow(open('/var/log/syslog')):
+for line in tailer.follow(open('/var/log/auth.log')):
     # check if is SSH login
     for unwantedUrl in blocklist:
         # if there exist a line with a entry on the blocklist, do 'telegram-send'
