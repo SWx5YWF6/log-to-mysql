@@ -1,0 +1,18 @@
+#service to run sshLog.py as system.
+
+
+[Unit]
+Description=Access log service
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /root/logSSH.py
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
