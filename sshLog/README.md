@@ -1,4 +1,4 @@
-# log-to-mysql
+# ssh log
 
 #pip dependencies:
 - tailer
