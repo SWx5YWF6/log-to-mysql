@@ -1,43 +1,51 @@
 #!/usr/bin/python
 
 # imports
+#  https://pypi.org/project/tailer/
 import tailer
-# https://pypi.org/project/tailer/
+#  https://pypi.org/project/mysql-connector-python/
 import mysql.connector
-# https://pypi.org/project/mysql-connector-python/
-# https://www.w3schools.com/python/python_mysql_insert.asp
-from datetime import datetime
-import telegram_send
+# Install geolite2 with
+#  pip3 install maxminddb 
+#  pip3 install maxminddb-geolite2
+#   according to: https://stackoverflow.com/questions/32575666/python-geoip-does-not-work-on-python3-4
 from geolite2 import geolite2
+from datetime import datetime
+
 
 # set database information
+#  https://www.w3schools.com/python/python_mysql_insert.asp
+#  the database and tables have to be created before running this script. you can use createDatabase.sql for this
+
+#  make sure your user has the correct permissions on the database.
+#  set database information
 mydb = mysql.connector.connect(
-  host="88.99.173.15",
-  port="3306",
+  host="localhost",
   user="username",
   password="password",
-  database="log"
+  database="database"
 )
-
 mycursor = mydb.cursor()
 
+# set reader for GeoIP
 reader = geolite2.reader()
 
-userUnknown = ": Failed password for invalid user"
-userKnown = ": Failed password for"
-SSHpublickey = "Accepted publickey for"
+# Define strings to check
+userFailedUnknown = ": Failed password for invalid user"
+userFailedKnown = ": Failed password for"
 
+# Function to add info to database
 def SQLadd(datetime, user, ip, country):
-  sql = "INSERT INTO ssh (time, username, srcIp, srcCountry, dstServer, dstCountry) VALUES (STR_TO_DATE(%(date)s,'%Y %b %d %k:%i:%s'), %(name)s, %(srcIpAddress)s, %(srcCountry)s, %(dstServer)s, %(dstCountry)s)"
-  mycursor.execute(sql, { 'date': datetime, 'name': user, 'srcIpAddress': ip, 'srcCountry': country, 'dstServer': 'DE01', 'dstCountry': 'DE'})
+  sql = "INSERT INTO ssh (time, username, srcIp, country) VALUES (STR_TO_DATE(%(date)s,'%Y %b %d %k:%i:%s'), %(name)s, %(ipAddress)s, %(country)s)"
+  mycursor.execute(sql, { 'date': datetime, 'name': user, 'ipAddress': ip, 'country': country})
 
   mydb.commit()
-  #print(datetime, user, ip, country)
+  print(datetime, user, ip, country)
 
 # Follow the file as it grows
 for line in tailer.follow(open('/var/log/auth.log')):
-
-  if userUnknown in line:
+  
+  if userFailedUnknown in line:
     list = line.split()
     currentYear = str(datetime.now().year)
     date = currentYear + " " + " ".join(list[0:3])
@@ -49,7 +57,7 @@ for line in tailer.follow(open('/var/log/auth.log')):
 
     SQLadd(date, user, ip, country)
 
-  elif userKnown in line:
+  elif userFailedKnown in line:
     list = line.split()
 
     currentYear = str(datetime.now().year)
@@ -61,6 +69,3 @@ for line in tailer.follow(open('/var/log/auth.log')):
     country = match['country']['iso_code']
 
     SQLadd(date, user, ip, country)
-
-  elif SSHpublickey in line:
-    telegram_send.send(messages=[line], conf=None, disable_web_page_preview="true")
