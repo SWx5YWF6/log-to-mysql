@@ -9,11 +9,13 @@
 Install with the next one-liner:
 python -m pip install tailer mysql-connector-python maxminddb maxminddb-geolite2
 
-#  SQL user
+#  SQL user\
 Advised is a low privilage SQL user that only can insert new lines.
+```
 CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
 GRANT INSERT ON log.ssh TO 'username'@'localhost';
 FLUSH PRIVILEGES;
+```
 
 #  run logSSH.py
 run to see if everything is fine and running without error
