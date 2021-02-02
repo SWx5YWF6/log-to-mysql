@@ -9,7 +9,7 @@
 Install with the next one-liner:
 python -m pip install tailer mysql-connector-python maxminddb maxminddb-geolite2
 
-#  SQL user\
+#  SQL user
 Advised is a low privilage SQL user that only can insert new lines.
 ```
 CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
