@@ -1,10 +1,8 @@
 CREATE TABLE log.ssh (
-          id INT AUTO_INCREMENT,
-          time DATETIME NOT NULL,
-          username VARCHAR(100),
-          srcIp VARCHAR(45),
-          srcCountry VARCHAR(2),
-          dstServer VARCHAR(4),
-          dstCountry VARCHAR(2),
-          PRIMARY KEY(id)
+  id INT AUTO_INCREMENT,
+  time DATETIME NOT NULL,
+  username VARCHAR(100),
+  srcIp VARCHAR(15),
+  country VARCHAR(2),
+  PRIMARY KEY(id)
 );
