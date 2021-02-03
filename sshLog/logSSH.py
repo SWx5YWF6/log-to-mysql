@@ -8,6 +8,7 @@ import mysql.connector
 # https://www.w3schools.com/python/python_mysql_insert.asp
 from datetime import datetime
 from geolite2 import geolite2
+import ipaddress
 
 # Variables
 dstCountry = ""
@@ -45,13 +46,21 @@ for line in tailer.follow(open('/var/log/auth.log')):
             date = str(datetime.now().year) + " " + " ".join(list[:3])
             var_user = user_unknown if user_unknown in line else user_known
             user = line.split(var_user,1)[1].rsplit(" from ")[0]
-            ip =list[-4]
+            ip = list[-4]
             match = reader.get(ip)
             try:
                 country = match['country']['iso_code']
             except:
                 country = ""
                 pass
+            
+            # Determine IP version
+            try:
+                ipObject = ipaddress.ip_address(ip)
+                ipType = f"IPv{ipObject.version}"
+            except:
+                ipType = ''
+                
             SQLadd(date, user, ip, country)
     except ValueError as e:
         print(f'Error: {e}')
